@@ -34,23 +34,22 @@ app.get('/api/todos', (_, response) => {
 
 // POST /api/todos
 app.post('/api/todos', (request, response) => {
-    const newTodo = {
-        id: todos.length + 1,
-        item: request.body.item,
-        complete: false
-    };
-    todos.push(newTodo);
-    response.json({ id: newTodo.id });
+    const { item } = request.body;
+    const id = todos.length + 1;
+    const complete = false;
+    todos.push({ id, item, complete });
+    response.json({ id });
 });
 
 // PUT /api/todos/:id
 app.put('/api/todos/:id', (request, response) => {
     const { id } = request.params;
-    const todo = todos.find(todo => todo.id === parseInt(id));
-    if (!todo) return response.status(404).json({ error: 'Todo not found' });
-    
-    todo.complete = !todo.complete;
-    response.json({ id: todo.id, complete: todo.complete });
+    const task = todos.find(todo => todo.id.toString() === id);
+    if (!task) {
+        return response.status(404).json({ error: 'Task not found' });
+    }
+    task.complete = !task.complete; // toggle the complete property
+    response.json({ id: task.id, complete: task.complete });
 });
 
 
